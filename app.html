@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>FluentCards</title>
+    <link rel="icon" href="icons/icon32.png" />
+    <link rel="stylesheet" href="app.css" />
+    <!-- PWA layer — harmless inside the extension, active when hosted -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#6d5efc" />
+    <link rel="apple-touch-icon" href="icons/icon192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="FluentCards" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+          <defs>
+            <linearGradient id="fcg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#6d5efc" />
+              <stop offset="100%" stop-color="#a855f7" />
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="28" height="28" rx="9" fill="url(#fcg)" />
+          <path
+            d="M18.4 7.5 10 17.6h4.6L13.4 24.5 21.8 14.4h-4.7z"
+            fill="#fff"
+          />
+        </svg>
+        <span class="brand-name">FluentCards</span>
+      </div>
+
+      <nav class="nav" id="nav">
+        <button class="nav-btn is-active" data-view="today">Today</button>
+        <button class="nav-btn" data-view="add">Add</button>
+        <button class="nav-btn" data-view="library">Library</button>
+        <button class="nav-btn" data-view="settings">Settings</button>
+      </nav>
+
+      <div class="topbar-right">
+        <div class="streak" id="streakBadge" title="Daily streak">
+          <span class="streak-flame">🔥</span><span id="streakCount">0</span>
+        </div>
+        <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+          <span class="theme-icon">◐</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ============================================================ TODAY -->
+      <section class="view is-active" id="view-today">
+        <div id="todayBody"></div>
+      </section>
+
+      <!-- ============================================================== ADD -->
+      <section class="view" id="view-add">
+        <div class="add-wrap">
+          <h2 class="panel-title">Add words</h2>
+          <p class="field-hint add-hint">
+            Paste or type a sentence — then tap every word you want to learn.
+            On a phone you can also share text here straight from the YouTube
+            app (share → FluentCards).
+          </p>
+
+          <textarea
+            id="addText"
+            class="add-text"
+            rows="3"
+            placeholder="e.g. Come on, get your act together, we're late!"
+            autocomplete="off"
+            autocapitalize="sentences"
+            spellcheck="false"
+          ></textarea>
+
+          <div class="add-actions">
+            <button class="btn" id="addTokenizeBtn">Show the words</button>
+            <button class="btn btn-ghost" id="addClearBtn">Clear</button>
+          </div>
+
+          <div id="addFeedback" class="add-feedback" hidden></div>
+
+          <div id="addTokens" class="add-tokens"></div>
+
+          <div class="add-status" id="addStatus" hidden></div>
+        </div>
+      </section>
+
+      <!-- ========================================================== LIBRARY -->
+      <section class="view" id="view-library">
+        <div class="lib-head">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" class="search-ico" aria-hidden="true">
+              <path
+                d="M10 4a6 6 0 1 0 3.6 10.8l4.3 4.3 1.4-1.4-4.3-4.3A6 6 0 0 0 10 4zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"
+                fill="currentColor"
+              />
+            </svg>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Search words, meanings or sentences…"
+              autocomplete="off"
+            />
+          </div>
+          <div class="chips" id="filterChips">
+            <button class="chip is-active" data-filter="all">All</button>
+            <button class="chip" data-filter="due">Due</button>
+            <button class="chip" data-filter="learning">Learning</button>
+            <button class="chip" data-filter="mastered">Mastered</button>
+          </div>
+          <div class="lib-meta">
+            <span id="libCount"></span>
+            <button class="btn btn-ghost btn-sm" id="lookupAllBtn" title="Fetch meanings for words that are missing one">
+              Find missing meanings
+            </button>
+          </div>
+        </div>
+
+        <div id="libraryBody"></div>
+      </section>
+
+      <!-- ========================================================= SETTINGS -->
+      <section class="view" id="view-settings">
+        <div class="settings-grid">
+          <div class="panel">
+            <h2 class="panel-title">Learning</h2>
+
+            <label class="field">
+              <span class="field-label">Dictionary language</span>
+              <span class="field-hint">Definitions are looked up in this language.</span>
+              <select id="setLang">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="it">Italiano</option>
+                <option value="pt">Português</option>
+                <option value="nl">Nederlands</option>
+                <option value="ru">Русский</option>
+                <option value="hi">हिन्दी</option>
+                <option value="ar">العربية</option>
+                <option value="tr">Türkçe</option>
+                <option value="ja">日本語</option>
+                <option value="ko">한국어</option>
+                <option value="zh">中文</option>
+              </select>
+            </label>
+
+            <div class="field">
+              <span class="field-label">Translate into</span>
+              <span class="field-hint">
+                Your languages appear on every card and in the mini card on
+                YouTube: the meaning and the clicked sentence, both translated.
+                English is always available too. Pick up to 3.
+              </span>
+              <div class="lang-checks" id="setTrLangs"></div>
+            </div>
+
+            <label class="field">
+              <span class="field-label">New words per day</span>
+              <span class="field-hint">
+                How many words you click in videos may enter your study queue per day.
+                0 = unlimited.
+              </span>
+              <input id="setNewPerDay" type="number" min="0" max="200" step="1" />
+            </label>
+
+            <label class="field">
+              <span class="field-label">Daily reminder</span>
+              <span class="field-hint">A notification when words are waiting. Leave empty to switch off.</span>
+              <input id="setReminder" type="time" />
+            </label>
+          </div>
+
+          <div class="panel">
+            <h2 class="panel-title">On YouTube</h2>
+
+            <label class="switch-row">
+              <span>
+                <span class="field-label">Click words in subtitles</span>
+                <span class="field-hint">Turning this off stops click-to-save in the player.</span>
+              </span>
+              <input type="checkbox" id="setEnabled" class="switch" />
+            </label>
+
+            <label class="switch-row">
+              <span>
+                <span class="field-label">Underline unknown words</span>
+                <span class="field-hint">Shows a dotted underline under every caption word.</span>
+              </span>
+              <input type="checkbox" id="setShowHints" class="switch" />
+            </label>
+
+            <div class="hint-box">
+              <b>How to use it</b>
+              <ol>
+                <li>Open any YouTube video and turn on <b>CC</b>.</li>
+                <li>Click a word you don't know — it is saved instantly.</li>
+                <li>Come back here every day and press <b>Space</b> to review.</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2 class="panel-title">Appearance</h2>
+            <label class="field">
+              <span class="field-label">Theme</span>
+              <select id="setTheme">
+                <option value="auto">Match system</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="panel">
+            <h2 class="panel-title">Your data</h2>
+            <p class="field-hint">
+              Cards are stored on this device. Export a backup before clearing your browser data.
+            </p>
+            <div class="btn-row">
+              <button class="btn btn-ghost" id="exportBtn">Export JSON</button>
+              <button class="btn btn-ghost" id="importBtn">Import JSON</button>
+              <button class="btn btn-danger-ghost" id="resetBtn">Erase everything</button>
+            </div>
+            <input type="file" id="importFile" accept="application/json,.json" hidden />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="app-toast" id="appToast" hidden></div>
+
+    <script src="lib/storage.js"></script>
+    <script src="app.js"></script>
+    <script>
+      /* Register the service worker — web/PWA only. Inside the extension
+         (chrome-extension://) this is skipped: no SW, no install prompt. */
+      (function () {
+        if (
+          typeof location !== "undefined" &&
+          (location.protocol === "https:" || location.protocol === "http:") &&
+          "serviceWorker" in navigator
+        ) {
+          window.addEventListener("load", function () {
+            navigator.serviceWorker.register("sw.js").catch(function () {
+              /* offline support is a bonus, not required */
+            });
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

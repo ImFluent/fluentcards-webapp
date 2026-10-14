@@ -1,0 +1,32 @@
+{
+  "name": "FluentCards — Learn YouTube words instantly",
+  "short_name": "FluentCards",
+  "description": "Turn words you don't know into flashcards with their meaning, the sentence, and a movie clip. Review daily.",
+  "id": "fluentcards",
+  "start_url": "./app.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0c0e13",
+  "theme_color": "#6d5efc",
+  "lang": "en",
+  "categories": ["education", "languages"],
+  "icons": [
+    { "src": "icons/icon192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "share_target": {
+    "action": "./app.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text"
+    }
+  },
+  "shortcuts": [
+    { "name": "Review today", "url": "./app.html#today" },
+    { "name": "Add words", "url": "./app.html#add" },
+    { "name": "Library", "url": "./app.html#library" }
+  ]
+}
